@@ -22,7 +22,7 @@
       <div class='demo-app-sidebar-section'>
         <h2>All Events ({{guests.length }})</h2>
         <ul>
-          <li v-for='guest in guests' :key='guest.id'>
+          <li v-for='guest in guests' :key='guest.id' class="guest_title">
             <b>{{ guest.startStr }}</b>
             <i>{{ guest.title }}</i>
           </li>
@@ -44,6 +44,7 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars*/ 
 import FullCalendar from '@fullcalendar/vue'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -73,6 +74,7 @@ export default {
           center: 'title',
           right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
+        events: [],
         initialView: 'dayGridMonth',
         initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
         editable: true,
@@ -95,9 +97,14 @@ export default {
 
   created() {
     this.guestsUrl = guestsUrl;
-
     this.initCalendar(INITIAL_EVENTS);
+
+    
   }, 
+
+  mounted() {
+      
+  },
 
   methods: {
 
@@ -105,27 +112,42 @@ export default {
       this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
     },
 
-    handleDateSelect(selectInfo) {
-      let title = prompt('Please enter a new title for your event')
-      let calendarApi = selectInfo.view.calendar
+    handleDateSelect(clickInfo) {
+        if (clickInfo.event.title) {
+          
+            console.log("single guest")
+        }
+        // console.log("SELECT INFO", selectInfo);
+        //   let title = prompt('Please enter a new title for your event')
+        //   let calendarApi = selectInfo.view.calendar
 
-      calendarApi.unselect() // clear date selection
+        //   calendarApi.unselect() // clear date selection
 
-      if (title) {
-        calendarApi.addEvent({
-          id: createEventId(),
-          title,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-          allDay: selectInfo.allDay
-        })
-      }
+        //   if (title) {
+        //     calendarApi.addEvent({
+        //       id: createEventId(),
+        //       title,
+        //       start: selectInfo.startStr,
+        //       end: selectInfo.endStr,
+        //       allDay: selectInfo.allDay
+        //     })
+        //   }
     },
 
     handleEventClick(clickInfo) {
-      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-        clickInfo.event.remove()
-      }
+           if (clickInfo.event.title) {
+               console.log("single guest");
+               for (var i in this.calendarOptions.events) {
+                if (this.calendarOptions.events[i].title === clickInfo.event.title) {
+                    console.log(this.calendarOptions.events[i]);
+                }
+            }
+        }
+    //     console.log("INFO GUEST", clickInfo.view);
+    //   if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+    
+    //     clickInfo.event.remove()
+    //   }
     },
 
     handleEvents(guests) {
@@ -140,18 +162,19 @@ export default {
     
     getGuests() {
        const headers = {
-        'X-FIB-API-AUTH-TYPE': 'exam',
-        'X-FIB-API-LANGUAGE': 'en_GB',
-        'X-FIB-API-AUTH-TOKEN': 'F6HCAFVHPEg3"Sw#'
+        'X-FIB-API-AUTH-TYPE':'exam',
+        'X-FIB-API-LANGUAGE':'en_GB',
+        'X-FIB-API-AUTH-TOKEN':'F6HCAFVHPEg3"Sw#',
+        'Content-Type': 'application/json'
       }
+      console.log("HEADERS", headers);
 
-      axios.get(`${guestsUrl}/`, { params: { offset: false, limit: 15 } },{
-        headers: headers
-      }).then(response => {
-        let guests = response.data;
-        console.log("RESPONSE", response.data);
+      axios.get(`${guestsUrl}`, { params: { offset: true, limit: 15 }, headers: headers }).then(response => {
+        let guests = response.data.items;
+        console.log("RESPONSE", response.data.items);
         let apiGuests = guests.map(guest => this.visitingGuest(guest));
         this.calendarOptions.events = [... apiGuests];
+         console.log("THIS IS CALENDAR OPTIONS EVENTS",this.calendarOptions.events)
       })
       .catch(error => {
         console.log("this is the error", error);
@@ -162,8 +185,10 @@ export default {
     visitingGuest(guest) { //factory function 
       let singleGuest = {
         id: guest.id,
-        title: "Guest",
-        start: guest.date,
+        email: guest.email,
+        gender: guest.gender,
+        title: guest.first_name +" "+guest.last_name,
+        start: guest.visited,
         allDay: false,
       };
       return singleGuest;
@@ -174,6 +199,11 @@ export default {
 
 
 <style lang='scss'>
+
+.guest_title {
+    display: flex;
+    flex-direction: column;
+}
 
 h2 {
   margin: 0;
