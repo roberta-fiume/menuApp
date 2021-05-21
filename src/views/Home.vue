@@ -50,6 +50,10 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from '../event-utils';
 
+const axios = require('axios');
+
+const guestsUrl = 'https://tst-api.feeditback.com/exam.guests';
+
 export default {
 
   components: {
@@ -89,6 +93,12 @@ export default {
     }
   },
 
+  created() {
+    this.guestsUrl = guestsUrl;
+
+    this.initCalendar(INITIAL_EVENTS);
+  }, 
+
   methods: {
 
     handleWeekendsToggle() {
@@ -121,7 +131,43 @@ export default {
     handleEvents(guests) {
         console.log("GUESTS",guests);
       this.guests = guests
-    }
+    },
+
+    initCalendar() {
+        this.getGuests();
+    },
+
+    
+    getGuests() {
+       const headers = {
+        'X-FIB-API-AUTH-TYPE': 'exam',
+        'X-FIB-API-LANGUAGE': 'en_GB',
+        'X-FIB-API-AUTH-TOKEN': 'F6HCAFVHPEg3"Sw#'
+      }
+
+      axios.get(`${guestsUrl}/`, { params: { offset: false, limit: 15 } },{
+        headers: headers
+      }).then(response => {
+        let guests = response.data;
+        console.log("RESPONSE", response.data);
+        let apiGuests = guests.map(guest => this.visitingGuest(guest));
+        this.calendarOptions.events = [... apiGuests];
+      })
+      .catch(error => {
+        console.log("this is the error", error);
+      });
+
+    },
+
+    visitingGuest(guest) { //factory function 
+      let singleGuest = {
+        id: guest.id,
+        title: "Guest",
+        start: guest.date,
+        allDay: false,
+      };
+      return singleGuest;
+    },
   }
 }
 </script>
