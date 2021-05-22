@@ -24,8 +24,6 @@
       </FullCalendar>
     </div>
 
-    
-
     <Modal
       v-show="isModalVisible"
       @close="closeModal"
@@ -37,6 +35,10 @@
         <template v-slot:body>
             <div class="home__guest">
                 <div class="home__guest-info">
+                    <label class="home__guest-label"> Guest ID: </label>
+                    <p class="home__guest-name"> {{ guest.id }} </p>
+                </div>
+                <div class="home__guest-info">
                     <label class="home__guest-label"> Name: </label>
                     <p class="home__guest-name"> {{ guest.title }} </p>
                 </div>
@@ -47,6 +49,18 @@
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Date of visit: </label>
                     <p class="home__guest-name"> {{ guest.start }} </p>
+                </div>
+                <div class="home__guest-info">
+                    <label class="home__guest-label"> Order: </label>
+                    <p class="home__guest-name"> {{ guest.name }} </p>
+                </div>
+                <div class="home__guest-info">
+                    <label class="home__guest-label"> Quantity: </label>
+                    <p class="home__guest-name"> {{ guest.quantity }} </p>
+                </div>
+                <div class="home__guest-info">
+                    <label class="home__guest-label"> Price: </label>
+                    <p class="home__guest-name"> {{ guest.price}} </p>
                 </div>
             </div>
         </template>
@@ -71,6 +85,7 @@ import Modal from "../components/Modal";
 const axios = require('axios');
 
 const guestsUrl = 'https://tst-api.feeditback.com/exam.guests';
+const ordersUrl = 'https://tst-api.feeditback.com/exam.guests.orders'
 
 export default {
 
@@ -110,6 +125,7 @@ export default {
         */
       },
       guests: [],
+      orders: [],
       guest: {},
       isModalVisible: false,
     }
@@ -117,14 +133,35 @@ export default {
 
   created() {
     this.guestsUrl = guestsUrl;
+    this.ordersUrl = ordersUrl;
     this.initCalendar(INITIAL_EVENTS); 
   }, 
 
   mounted() {
-      
+      this.getOrders();
   },
 
   methods: {
+
+    getOrders() {
+      const headers = {
+        'X-FIB-API-AUTH-TYPE':'exam',
+        'X-FIB-API-LANGUAGE':'en_GB',
+        'X-FIB-API-AUTH-TOKEN':'F6HCAFVHPEg3"Sw#',
+        'Content-Type': 'application/json'
+      }
+      console.log("HEADERS", headers);
+
+      axios.get(`${ordersUrl}`, { params: { offset: 0, limit: 50 }, headers: headers }).then(response => {
+        let ordersApi = response.data.items;
+        console.log("RESPONSE", response.data.items);
+        this.orders = ordersApi;
+        console.log("ORDERS", this.orders);
+      })
+      .catch(error => {
+        console.log("this is the error", error);
+      });
+    },
 
 
     handleDateSelect(clickInfo) {
@@ -152,18 +189,27 @@ export default {
     seeGuestInfo(infoGuest) {
            if (infoGuest.event.title) {
                console.log("single guest");
-               for (var i in this.calendarOptions.events) {
+              for (var i in this.calendarOptions.events) {
                 if (this.calendarOptions.events[i].title === infoGuest.event.title) {
-                    this.guest = this.calendarOptions.events[i];
-                    console.log(this.calendarOptions.events[i]);
-                    this.showModal();
+                  this.guest = this.calendarOptions.events[i];
+                  console.log(this.calendarOptions.events[i]);
+                  for (var k in this.orders) {
+                    console.log("GUEST ID", this.guest.id);
+                    if (this.guest.id === this.orders[k].guest_id) {
+                      this.guest.price = this.orders[k].price;
+                      this.guest.name = this.orders[k].name;
+                      this.guest.quantity = this.orders[k].quantity;
+                       console.log("COMPLETE GUEST", this.guest);
+                    }
+                  }
+                 
+                  this.showModal();
                 }
-            }
+              }
         }
     },
 
     handleEvents(guests) {
-        console.log("GUESTS",guests);
       this.guests = guests
     },
 
@@ -181,7 +227,7 @@ export default {
       }
       console.log("HEADERS", headers);
 
-      axios.get(`${guestsUrl}`, { params: { offset: true, limit: 50 }, headers: headers }).then(response => {
+      axios.get(`${guestsUrl}`, { params: { offset: 0, limit: 50 }, headers: headers }).then(response => {
         let guests = response.data.items;
         console.log("RESPONSE", response.data.items);
         let apiGuests = guests.map(guest => this.visitingGuest(guest));
