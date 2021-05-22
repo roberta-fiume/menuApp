@@ -1,17 +1,5 @@
 <template>
    <div class='home'>
-    <div class='demo-app-sidebar'>
-      <div class='demo-app-sidebar-section'>
-        <h2>All Events ({{ guests.length }})</h2>
-        
-        <ul>
-          <li v-for='guest in guests' :key='guest.id'>
-            <b>{{ guest.startStr }}</b>
-            <i>{{ guest.title }}</i>
-          </li>
-        </ul>
-      </div>
-    </div>
     <div class='home__main'>
       <FullCalendar
         class='demo-app-calendar'
@@ -29,7 +17,7 @@
       @close="closeModal"
     >
         <template v-slot:header>
-            <h2>Guest Info</h2>
+            <h3 class="home__header">Guest Info</h3>
         </template>
 
         <template v-slot:body>
@@ -64,10 +52,6 @@
                 </div>
             </div>
         </template>
-
-        <!-- <template v-slot:footer>
-            This is a new modal footer.
-        </template> -->
     </Modal>
   </div>
 </template>
@@ -102,11 +86,6 @@ export default {
           timeGridPlugin,
           interactionPlugin // needed for dateClick
         ],
-        headerToolbar: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay'
-        },
         events: [],
         initialView: 'dayGridMonth',
         initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
@@ -152,7 +131,7 @@ export default {
       }
       console.log("HEADERS", headers);
 
-      axios.get(`${ordersUrl}`, { params: { offset: 0, limit: 50 }, headers: headers }).then(response => {
+      axios.get(`${ordersUrl}`, { params: { offset: 0, limit: 100 }, headers: headers }).then(response => {
         let ordersApi = response.data.items;
         console.log("RESPONSE", response.data.items);
         this.orders = ordersApi;
@@ -227,7 +206,7 @@ export default {
       }
       console.log("HEADERS", headers);
 
-      axios.get(`${guestsUrl}`, { params: { offset: 0, limit: 50 }, headers: headers }).then(response => {
+      axios.get(`${guestsUrl}`, { params: { offset: 0, limit: 100 }, headers: headers }).then(response => {
         let guests = response.data.items;
         console.log("RESPONSE", response.data.items);
         let apiGuests = guests.map(guest => this.visitingGuest(guest));
@@ -265,10 +244,12 @@ export default {
 
 
 <style lang='scss'>
+@import "../styles/variables.scss";
+@import "../styles/_queries.scss";
+@import "../styles/mixins.scss";
 
-h2 {
+h3 {
   margin: 0;
-  font-size: 16px;
 }
 
 ul {
@@ -288,7 +269,6 @@ b { /* used for event dates/times */
 .home {
   display: flex;
   min-height: 100%;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
 
   &__main {
@@ -296,44 +276,43 @@ b { /* used for event dates/times */
     padding: 3em;
   }
 
+  &__header {
+    @include textProperties(24px, $secondary-dark-title);
+    font-weight: bold;
+  }
+
   &__guest {
       display: flex; 
       flex-direction: column;
-      &-info {
-          display: flex;
-          justify-content: center;
-          align-items: center;
+      align-items: flex-start;
+
+      &-info { 
+        @include flexProperties(row, center, center);
+      }
+
+      &-label {
+         @include textProperties(15px,$secondary-dark-title);
+         font-weight: bold;
       }
 
       &-name {
-          margin-left: 10px;
+         @include textProperties(15px,$secondary-dark-title);
+         margin-left: 10px;
       }
     }
 }
-
-.demo-app-sidebar {
-  width: 300px;
-  line-height: 1.5;
-  background: #eaf9ff;
-  border-right: 1px solid #d3e2e8;
-}
-
-.demo-app-sidebar-section {
-  padding: 2em;
-}
-
 
 .fc { /* the calendar root */
   max-width: 1100px;
   margin: 0 auto;
 }
-.fc-theme-standard td {
-    width: 150px;
-}
+// .fc-theme-standard td {
+//     width: 150px;
+// }
 
-.fc-col-header-cell {
-    width: 150px;
-}
+// .fc-col-header-cell {
+//     width: 150px;
+// }
 
 
 </style>

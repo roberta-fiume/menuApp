@@ -55,12 +55,12 @@
     position: relative;
     width: 600px;
     background-color: $white;
-    border-radius: 5px;
     margin: 50px auto;
     display: flex;
     flex-direction: column;
     z-index: 2;
-
+    @include borderProperties(#0aa, 8px);
+  
     @media screen and (max-width: 992px) {
       width: 90%;
     }
@@ -68,11 +68,13 @@
 
   &__close {
    cursor: pointer;
+   @include borderProperties($secondary-dark-title, 3px);
    @include measures(25px, 25px);
    @include flexProperties(column, center, center);
 
     &-icon {
        font-size: 15px;
+       color: $secondary-dark-title;
     }
   }
 
