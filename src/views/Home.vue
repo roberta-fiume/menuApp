@@ -1,17 +1,17 @@
 <template>
-   <div class='demo-app'>
+   <div class='home'>
     <div class='demo-app-sidebar'>
       <div class='demo-app-sidebar-section'>
-        <h2>All Events ({{guests.length }})</h2>
+        <h2>All Events ({{ guests.length }})</h2>
         <ul>
-          <li v-for='guest in guests' :key='guest.id' class="guest_title">
+          <li v-for='guest in guests' :key='guest.id'>
             <b>{{ guest.startStr }}</b>
             <i>{{ guest.title }}</i>
           </li>
         </ul>
       </div>
     </div>
-    <div class='demo-app-main'>
+    <div class='home__main'>
       <FullCalendar
         class='demo-app-calendar'
         :options='calendarOptions'
@@ -23,29 +23,34 @@
       </FullCalendar>
     </div>
 
-   <!-- <button
-      type="button"
-      class="btn"
-      @click="showModal"
-    >
-      Open Modal!
-    </button> -->
-
     <Modal
       v-show="isModalVisible"
       @close="closeModal"
     >
         <template v-slot:header>
-            This is a new modal header.
+            <h2>Guest Info</h2>
         </template>
 
         <template v-slot:body>
-            This is a new modal body.
+            <div class="home__guest">
+                <div class="home__guest-info">
+                    <label class="home__guest-label"> Name: </label>
+                    <p class="home__guest-name"> {{ guest.title }} </p>
+                </div>
+                <div class="home__guest-info">
+                    <label class="home__guest-label"> Email: </label>
+                    <p class="home__guest-name"> {{ guest.email }} </p>
+                </div>
+                <div class="home__guest-info">
+                    <label class="home__guest-label"> Date of visit: </label>
+                    <p class="home__guest-name"> {{ guest.start }} </p>
+                </div>
+            </div>
         </template>
 
-        <template v-slot:footer>
+        <!-- <template v-slot:footer>
             This is a new modal footer.
-        </template>
+        </template> -->
     </Modal>
   </div>
 </template>
@@ -102,6 +107,7 @@ export default {
         */
       },
       guests: [],
+      guest: {},
       isModalVisible: false,
     }
   },
@@ -147,6 +153,7 @@ export default {
                console.log("single guest");
                for (var i in this.calendarOptions.events) {
                 if (this.calendarOptions.events[i].title === infoGuest.event.title) {
+                    this.guest = this.calendarOptions.events[i];
                     console.log(this.calendarOptions.events[i]);
                     this.showModal();
                 }
@@ -213,11 +220,6 @@ export default {
 
 <style lang='scss'>
 
-.guest_title {
-    display: flex;
-    flex-direction: column;
-}
-
 h2 {
   margin: 0;
   font-size: 16px;
@@ -237,11 +239,30 @@ b { /* used for event dates/times */
   margin-right: 3px;
 }
 
-.demo-app {
+.home {
   display: flex;
   min-height: 100%;
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 14px;
+
+  &__main {
+    flex-grow: 1;
+    padding: 3em;
+  }
+
+  &__guest {
+      display: flex; 
+      flex-direction: column;
+      &-info {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
+
+      &-name {
+          margin-left: 10px;
+      }
+    }
 }
 
 .demo-app-sidebar {
@@ -255,10 +276,6 @@ b { /* used for event dates/times */
   padding: 2em;
 }
 
-.demo-app-main {
-  flex-grow: 1;
-  padding: 3em;
-}
 
 .fc { /* the calendar root */
   max-width: 1100px;
