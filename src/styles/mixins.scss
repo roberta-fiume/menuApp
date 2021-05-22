@@ -16,6 +16,14 @@
     align-items: $alignItems;
 }
 
+@mixin positionProperties($fixed, $top, $right, $bottom, $left) {
+    position: $fixed;
+    top: $top;
+    right: $right;
+    bottom: $bottom;
+    left: $left;
+}
+
 @mixin borderProperties($borderColor) {
     border: $borderColor;
     border-radius: 5px;

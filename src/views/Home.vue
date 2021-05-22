@@ -3,6 +3,7 @@
     <div class='demo-app-sidebar'>
       <div class='demo-app-sidebar-section'>
         <h2>All Events ({{ guests.length }})</h2>
+        
         <ul>
           <li v-for='guest in guests' :key='guest.id'>
             <b>{{ guest.startStr }}</b>
@@ -22,6 +23,8 @@
         </template>
       </FullCalendar>
     </div>
+
+    
 
     <Modal
       v-show="isModalVisible"
