@@ -114,9 +114,7 @@ export default {
 
   created() {
     this.guestsUrl = guestsUrl;
-    this.initCalendar(INITIAL_EVENTS);
-
-    
+    this.initCalendar(INITIAL_EVENTS); 
   }, 
 
   mounted() {
@@ -159,7 +157,6 @@ export default {
                 }
             }
         }
-   
     },
 
     handleEvents(guests) {
@@ -181,7 +178,7 @@ export default {
       }
       console.log("HEADERS", headers);
 
-      axios.get(`${guestsUrl}`, { params: { offset: true, limit: 15 }, headers: headers }).then(response => {
+      axios.get(`${guestsUrl}`, { params: { offset: true, limit: 50 }, headers: headers }).then(response => {
         let guests = response.data.items;
         console.log("RESPONSE", response.data.items);
         let apiGuests = guests.map(guest => this.visitingGuest(guest));
@@ -281,5 +278,13 @@ b { /* used for event dates/times */
   max-width: 1100px;
   margin: 0 auto;
 }
+.fc-theme-standard td {
+    width: 150px;
+}
+
+.fc-col-header-cell {
+    width: 150px;
+}
+
 
 </style>

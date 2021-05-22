@@ -1,0 +1,37 @@
+@import "../styles/variables.scss";
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+@mixin textProperties($setFontSize) {
+    font-family: 'Montserrat', sans-serif;
+    font-size: $setFontSize;
+    font-weight: 400;
+    line-height: 1.5;
+    color: $primary;
+}
+
+@mixin flexProperties($flexDirection:row, $justifyContent:space-around, $alignItems:center) {
+    display: flex;
+    flex-direction: $flexDirection;
+    justify-content: $justifyContent;
+    align-items: $alignItems;
+}
+
+@mixin borderProperties($borderColor) {
+    border: $borderColor;
+    border-radius: 5px;
+}
+
+@mixin measures($width, $height) {
+    width: $width;
+    height: $height;
+}
+
+@mixin m-left-right($m-left, $m-right) {
+    margin-left: $m-left;
+    margin-right: $m-right;
+}
+
+@mixin p-left-right($p-left, $p-right) {
+    padding-left: $p-left;
+    padding-right: $p-right;
+}
