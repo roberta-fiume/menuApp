@@ -2,24 +2,6 @@
    <div class='demo-app'>
     <div class='demo-app-sidebar'>
       <div class='demo-app-sidebar-section'>
-        <h2>Instructions</h2>
-        <ul>
-          <li>Select dates and you will be prompted to create a new event</li>
-          <li>Drag, drop, and resize events</li>
-          <li>Click an event to delete it</li>
-        </ul>
-      </div>
-      <div class='demo-app-sidebar-section'>
-        <label>
-          <input
-            type='checkbox'
-            :checked='calendarOptions.weekends'
-            @change='handleWeekendsToggle'
-          />
-          toggle weekends
-        </label>
-      </div>
-      <div class='demo-app-sidebar-section'>
         <h2>All Events ({{guests.length }})</h2>
         <ul>
           <li v-for='guest in guests' :key='guest.id' class="guest_title">
@@ -40,6 +22,31 @@
         </template>
       </FullCalendar>
     </div>
+
+   <!-- <button
+      type="button"
+      class="btn"
+      @click="showModal"
+    >
+      Open Modal!
+    </button> -->
+
+    <Modal
+      v-show="isModalVisible"
+      @close="closeModal"
+    >
+        <template v-slot:header>
+            This is a new modal header.
+        </template>
+
+        <template v-slot:body>
+            This is a new modal body.
+        </template>
+
+        <template v-slot:footer>
+            This is a new modal footer.
+        </template>
+    </Modal>
   </div>
 </template>
 
@@ -50,6 +57,8 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from '../event-utils';
+import Modal from "../components/Modal";
+
 
 const axios = require('axios');
 
@@ -58,7 +67,8 @@ const guestsUrl = 'https://tst-api.feeditback.com/exam.guests';
 export default {
 
   components: {
-    FullCalendar // make the <FullCalendar> tag available
+    FullCalendar,
+    Modal, // make the <FullCalendar> tag available
   },
 
   data: function() {
@@ -83,7 +93,7 @@ export default {
         dayMaxEvents: true,
         weekends: true,
         select: this.handleDateSelect,
-        eventClick: this.handleEventClick,
+        eventClick: this.seeGuestInfo,
         eventsSet: this.handleEvents
         /* you can update a remote database when these fire:
         eventAdd:
@@ -91,7 +101,8 @@ export default {
         eventRemove:
         */
       },
-      guests: []
+      guests: [],
+      isModalVisible: false,
     }
   },
 
@@ -108,9 +119,6 @@ export default {
 
   methods: {
 
-    handleWeekendsToggle() {
-      this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
-    },
 
     handleDateSelect(clickInfo) {
         if (clickInfo.event.title) {
@@ -134,20 +142,17 @@ export default {
         //   }
     },
 
-    handleEventClick(clickInfo) {
-           if (clickInfo.event.title) {
+    seeGuestInfo(infoGuest) {
+           if (infoGuest.event.title) {
                console.log("single guest");
                for (var i in this.calendarOptions.events) {
-                if (this.calendarOptions.events[i].title === clickInfo.event.title) {
+                if (this.calendarOptions.events[i].title === infoGuest.event.title) {
                     console.log(this.calendarOptions.events[i]);
+                    this.showModal();
                 }
             }
         }
-    //     console.log("INFO GUEST", clickInfo.view);
-    //   if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-    
-    //     clickInfo.event.remove()
-    //   }
+   
     },
 
     handleEvents(guests) {
@@ -193,6 +198,14 @@ export default {
       };
       return singleGuest;
     },
+
+    showModal() {
+       this.isModalVisible = true;
+    },
+
+    closeModal() {
+       this.isModalVisible = false;
+    }
   }
 }
 </script>
