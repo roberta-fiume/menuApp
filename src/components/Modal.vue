@@ -60,10 +60,15 @@
     flex-direction: column;
     z-index: 2;
     @include borderProperties(#0aa, 8px);
-  
-    @media screen and (max-width: 992px) {
-      width: 90%;
+
+    @include responsive(tablet) {
+      width: 400px;  
     }
+
+    @include responsive(mobile) {
+      width: 300px;  
+    }
+
   }
 
   &__close {

@@ -279,6 +279,10 @@ b { /* used for event dates/times */
   &__header {
     @include textProperties(24px, $secondary-dark-title);
     font-weight: bold;
+
+    @include responsive(mobile) {
+      @include textProperties(20px, $secondary-dark-title);
+    }
   }
 
   &__guest {
@@ -292,7 +296,7 @@ b { /* used for event dates/times */
 
       &-label {
          @include textProperties(15px,$secondary-dark-title);
-         font-weight: bold;
+         font-weight: bold; 
       }
 
       &-name {
