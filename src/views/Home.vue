@@ -1,9 +1,15 @@
 <template>
    <div class='home'>
     <div class='home__main'>
+      <div class="home__main-init"> 
+        <p class="home__main-init-text">Who visisted my restaurant?</p>
+        <p class="home__main-init-text">Let's find out! </p>
+        <button class="home__main-init-button" @click="showCalendar"> See guests </button>
+      </div>
       <FullCalendar
         class='demo-app-calendar'
         :options='calendarOptions'
+        v-if="isCalendarVisible"
       >
         <template v-slot:eventContent='arg'>
           <b>{{ arg.timeText }}</b>
@@ -112,6 +118,7 @@ export default {
       isModalVisible: false,
       show: false,
       noGuests: "There are no guests for this day",
+      isCalendarVisible: false,
     }
   },
 
@@ -127,6 +134,10 @@ export default {
   },
 
   methods: {
+
+    showCalendar() {
+      this.isCalendarVisible = !this.isCalendarVisible;
+    },
 
     getOrders() {
       const headers = {
@@ -264,10 +275,53 @@ b { /* used for event dates/times */
   display: flex;
   min-height: 100%;
   font-size: 14px;
-
+  @include flexProperties(column, center, center);
+  
   &__main {
     flex-grow: 1;
     padding: 3em;
+
+    &-init {
+      background-color: rgba(0,170,170,0.1);
+      width: 500px;
+      margin-bottom: 70px;
+      @include measures(700px, 400px);
+      @include borderProperties($secondary, 10px);
+      @include flexProperties(column, center, center);
+      @include responsive(tablet) {
+        @include textProperties(25px, $secondary-dark-title);
+      }
+
+      @include responsive(mobile) {
+        width: 330px;
+        @include textProperties(20px, $secondary-dark-title);
+      }
+    }
+
+    &-init-text {
+      @include textProperties(30px, $secondary-dark-title);
+      font-weight: bold;
+
+      @include responsive(mobile) {
+        @include textProperties(20px, $secondary-dark-title);
+      }
+    }
+
+    &-init-button {
+      cursor: pointer;
+      font-weight: 500;
+      background-color: $secondary-dark-title;
+      border: none;
+      padding: 10px;
+      margin-top: 25px;
+      @include textProperties(17px, $white);
+      @include borderProperties(none, 5px);
+      @include responsive(mobile) {
+      @include textProperties(14px, $white);
+      }
+    }
+
+
   }
 
   &__header {
