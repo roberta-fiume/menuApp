@@ -273,22 +273,24 @@ b { /* used for event dates/times */
 
 .home {
   display: flex;
+   @include flexProperties(column, center, center);
   min-height: 100%;
   font-size: 14px;
-  @include flexProperties(column, center, center);
-  
+
   &__main {
     flex-grow: 1;
     padding: 3em;
 
     &-init {
       background-color: rgba(0,170,170,0.1);
-      width: 500px;
       margin-bottom: 70px;
       @include measures(700px, 400px);
       @include borderProperties($secondary, 10px);
-      @include flexProperties(column, center, center);
+      @include  flexProperties(column, center, center);
+   
+
       @include responsive(tablet) {
+        width: 500px;
         @include textProperties(25px, $secondary-dark-title);
       }
 
@@ -308,17 +310,18 @@ b { /* used for event dates/times */
     }
 
     &-init-button {
-      cursor: pointer;
-      font-weight: 500;
-      background-color: $secondary-dark-title;
-      border: none;
-      padding: 10px;
-      margin-top: 25px;
-      @include textProperties(17px, $white);
-      @include borderProperties(none, 5px);
-      @include responsive(mobile) {
-      @include textProperties(14px, $white);
-      }
+        cursor: pointer;
+        @include textProperties(17px, $white);
+        font-weight: 500;
+        background-color: $secondary-dark-title;
+        @include borderProperties(none, 5px);
+        border: none;
+        padding: 10px;
+        margin-top: 25px;
+
+        @include responsive(mobile) {
+          @include textProperties(14px, $white);
+        }
     }
 
 
