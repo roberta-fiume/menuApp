@@ -34,10 +34,12 @@
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Guest ID: </label>
                     <p class="home__guest-name"> {{ guest.id }} </p>
+                    <p class="home__guest-name"> {{ singleGuest.id }} </p>
                 </div>
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Name: </label>
                     <p class="home__guest-name"> {{ guest.title }} </p>
+                     <p class="home__guest-name"> {{ singleGuest.title }} </p>
                 </div>
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Email: </label>
@@ -73,6 +75,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { INITIAL_EVENTS, createEventId } from '../event-utils';
 import Modal from "../components/Modal";
+import moment from 'moment';
 
 
 const axios = require('axios');
@@ -119,6 +122,7 @@ export default {
       show: false,
       noGuests: "There are no guests for this day",
       isCalendarVisible: false,
+      singleGuest: {},
     }
   },
 
@@ -127,10 +131,12 @@ export default {
     this.ordersUrl = ordersUrl;
     this.initCalendar(INITIAL_EVENTS); 
     this.select = this.eventClick;
+  
   }, 
 
   mounted() {
       this.getOrders();
+      console.log("EVENT FROM API", this.eventClick)
   },
 
   methods: {
@@ -159,7 +165,7 @@ export default {
       });
     },
 
-    handleDateSelect(clickInfo, infoGuest) {
+    handleDateSelect(clickInfo) {
       console.log("HANDLE DATE SELECT",clickInfo);
       let element = document.querySelector('.fc-direction-ltr .fc-daygrid-event.fc-event-end');
       console.log("INSIDE ELEMENT", element);
@@ -167,6 +173,43 @@ export default {
         console.log("ELEMENT DOESN'T EXIST");
         this.show = true;
         this.showModal(); 
+      }
+      console.log("CALENDAR OPTIONS", this.calendarOptions.events)
+      this.seeGuests(clickInfo);
+     
+
+
+    },
+
+    seeGuests(clickInfo) {
+      // let ourGuests = this.handleEvents(this.guests);
+      console.log("I GOT CALLED");
+      
+      if (clickInfo.start) {
+        let date = new Date(clickInfo.start).toISOString();
+        let momentDate = moment(date);
+        console.log("MOMENT DATE",momentDate);
+        let clickInfoDate = momentDate.format("YYYY-MM-DD hh:mm:ss");
+        console.log("MOMENT DATE FORMAT",clickInfoDate)
+        for (var i in this.calendarOptions.events) {
+          console.log("date in eventtttt",this.calendarOptions.events[i].start);
+          if (this.calendarOptions.events[i].start == clickInfoDate) {
+            console.log("TRUEEEEE!!!");
+            this.singleGuest = this.calendarOptions.events[i];
+            console.log("SINGLE GUEST OBJJJJ", this.singleGuest)
+            for (var k in this.orders) {
+              console.log("SINGLE GUEST COMPLTETEEEE22", this.singleGuest.id);
+              if (this.singleGuest.id === this.orders[k].guest_id) {
+                this.singleGuest.price = this.orders[k].price;
+                this.singleGuest.name = this.orders[k].name;
+                this.singleGuest.quantity = this.orders[k].quantity;
+                  console.log("COMPLETE SINGLE GUEST 3333", this.singleGuest);
+              }
+            }
+
+            this.showModal();
+          }
+        }
       }
     },
 
@@ -194,7 +237,8 @@ export default {
     },
 
     handleEvents(guests) {
-      this.guests = guests
+      console.log("GUESTSssssss", guests);
+      return this.guests = guests;
     },
 
     initCalendar() {
