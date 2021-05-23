@@ -401,15 +401,17 @@ b { /* used for event dates/times */
 }
 
 .fc .fc-daygrid-more-link {
-    @include responsive(tablet) {
-      @include textProperties(9px, $primary);
-    }
+  @include responsive(tablet) {
+    @include textProperties(9px, $primary);
+  }
 
-    @include responsive(mobile) {
-      @include textProperties(8px, $primary);
-    }
+  @include responsive(mobile) {
+    @include textProperties(8px, $primary);
+  }
+}
 
- 
+.fc-daygrid-dot-event:hover {
+  background: $primary-light;
 }
 
 .fc-direction-ltr .fc-daygrid-event.fc-event-end span {
@@ -428,6 +430,11 @@ b { /* used for event dates/times */
   }
 }
 
+.fc-direction-ltr .fc-daygrid-event.fc-event-end span:hover {
+  color: $white;
+  transition: 0.3s;
+}
+
 .fc-theme-standard .fc-popover-header {
   background-color: $primary-light;
   @include textProperties(12px, $white);
@@ -435,6 +442,27 @@ b { /* used for event dates/times */
 
 .fc .fc-daygrid-event-harness {
   @include textProperties(18px, $primary !important) ;
+}
+
+// calndar grid style
+.fc-theme-standard td {
+  border: 1px solid $primary;
+}
+
+.fc .fc-daygrid-day-frame:hover  {
+  cursor: pointer;
+  background-color: $primary-light-second;
+  color: $white;
+}
+
+.fc .fc-scrollgrid-liquid {
+  border: 2px solid $primary;
+  box-shadow: 0 0 10px 0 rgba(143, 12, 84, 0.158);
+}
+
+.fc-theme-standard th {
+  border: 2px solid $primary;
+ 
 }
 
 
