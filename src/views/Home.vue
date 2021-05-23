@@ -21,7 +21,10 @@
         </template>
 
         <template v-slot:body>
-            <div class="home__guest">
+            <div v-if="show">
+              <p class="home__noGuests"> {{ noGuests }}</p>
+            </div>
+            <div class="home__guest" v-if="!show">
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Guest ID: </label>
                     <p class="home__guest-name"> {{ guest.id }} </p>
@@ -107,6 +110,8 @@ export default {
       orders: [],
       guest: {},
       isModalVisible: false,
+      show: false,
+      noGuests: "There are no guests for this day",
     }
   },
 
@@ -114,6 +119,7 @@ export default {
     this.guestsUrl = guestsUrl;
     this.ordersUrl = ordersUrl;
     this.initCalendar(INITIAL_EVENTS); 
+    this.select = this.eventClick;
   }, 
 
   mounted() {
@@ -142,50 +148,38 @@ export default {
       });
     },
 
-
-    handleDateSelect(clickInfo) {
-        if (clickInfo.event.title) {
-          
-            console.log("single guest")
-        }
-        // console.log("SELECT INFO", selectInfo);
-        //   let title = prompt('Please enter a new title for your event')
-        //   let calendarApi = selectInfo.view.calendar
-
-        //   calendarApi.unselect() // clear date selection
-
-        //   if (title) {
-        //     calendarApi.addEvent({
-        //       id: createEventId(),
-        //       title,
-        //       start: selectInfo.startStr,
-        //       end: selectInfo.endStr,
-        //       allDay: selectInfo.allDay
-        //     })
-        //   }
+    handleDateSelect(clickInfo, infoGuest) {
+      console.log("HANDLE DATE SELECT",clickInfo);
+      let element = document.querySelector('.fc-direction-ltr .fc-daygrid-event.fc-event-end');
+      console.log("INSIDE ELEMENT", element);
+      if(!element) {
+        console.log("ELEMENT DOESN'T EXIST");
+        this.show = true;
+        this.showModal(); 
+      }
     },
 
     seeGuestInfo(infoGuest) {
-           if (infoGuest.event.title) {
-               console.log("single guest");
-              for (var i in this.calendarOptions.events) {
-                if (this.calendarOptions.events[i].title === infoGuest.event.title) {
-                  this.guest = this.calendarOptions.events[i];
-                  console.log(this.calendarOptions.events[i]);
-                  for (var k in this.orders) {
-                    console.log("GUEST ID", this.guest.id);
-                    if (this.guest.id === this.orders[k].guest_id) {
-                      this.guest.price = this.orders[k].price;
-                      this.guest.name = this.orders[k].name;
-                      this.guest.quantity = this.orders[k].quantity;
-                       console.log("COMPLETE GUEST", this.guest);
-                    }
-                  }
-                 
-                  this.showModal();
-                }
+      console.log("INFOGUEST", infoGuest);
+      if (infoGuest.event.title) {
+          console.log("single guest");
+        for (var i in this.calendarOptions.events) {
+          if (this.calendarOptions.events[i].title === infoGuest.event.title) {
+            this.guest = this.calendarOptions.events[i];
+            console.log(this.calendarOptions.events[i]);
+            for (var k in this.orders) {
+              console.log("GUEST ID", this.guest.id);
+              if (this.guest.id === this.orders[k].guest_id) {
+                this.guest.price = this.orders[k].price;
+                this.guest.name = this.orders[k].name;
+                this.guest.quantity = this.orders[k].quantity;
+                  console.log("COMPLETE GUEST", this.guest);
               }
+            }
+            this.showModal();
+          }
         }
+      } 
     },
 
     handleEvents(guests) {
@@ -282,6 +276,15 @@ b { /* used for event dates/times */
 
     @include responsive(mobile) {
       @include textProperties(20px, $secondary-dark-title);
+    }
+  }
+
+  &__noGuests {
+    @include textProperties(20px,$secondary-dark-title);
+     font-weight: bold;
+
+    @include responsive(mobile) {
+      @include textProperties(17px, $secondary-dark-title);
     }
   }
 
