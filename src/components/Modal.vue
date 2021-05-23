@@ -1,7 +1,7 @@
 <template>
  <transition name="fade">
     <div class="modal">
-      <div class="modal__backdrop"  @click="close"/>
+      <div class="modal__backdrop" @click="close"/>
 
       <div class="modal__dialog">
         <div class="modal__header">
@@ -95,13 +95,6 @@
   }
 
 }
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
+
 
 </style>

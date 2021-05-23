@@ -34,12 +34,10 @@
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Guest ID: </label>
                     <p class="home__guest-name"> {{ guest.id }} </p>
-                    <p class="home__guest-name"> {{ singleGuest.id }} </p>
                 </div>
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Name: </label>
                     <p class="home__guest-name"> {{ guest.title }} </p>
-                     <p class="home__guest-name"> {{ singleGuest.title }} </p>
                 </div>
                 <div class="home__guest-info">
                     <label class="home__guest-label"> Email: </label>
@@ -87,7 +85,7 @@ export default {
 
   components: {
     FullCalendar,
-    Modal, // make the <FullCalendar> tag available
+    Modal, 
   },
 
   data: function() {
@@ -96,11 +94,11 @@ export default {
         plugins: [
           dayGridPlugin,
           timeGridPlugin,
-          interactionPlugin // needed for dateClick
+          interactionPlugin
         ],
         events: [],
         initialView: 'dayGridMonth',
-        initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
+        initialEvents: INITIAL_EVENTS,
         editable: true,
         selectable: true,
         selectMirror: true,
@@ -109,11 +107,6 @@ export default {
         select: this.handleDateSelect,
         eventClick: this.seeGuestInfo,
         eventsSet: this.handleEvents
-        /* you can update a remote database when these fire:
-        eventAdd:
-        eventChange:
-        eventRemove:
-        */
       },
       guests: [],
       orders: [],
@@ -122,7 +115,6 @@ export default {
       show: false,
       noGuests: "There are no guests for this day",
       isCalendarVisible: false,
-      singleGuest: {},
     }
   },
 
@@ -130,13 +122,10 @@ export default {
     this.guestsUrl = guestsUrl;
     this.ordersUrl = ordersUrl;
     this.initCalendar(INITIAL_EVENTS); 
-    this.select = this.eventClick;
-  
   }, 
 
   mounted() {
-      this.getOrders();
-      console.log("EVENT FROM API", this.eventClick)
+    this.getOrders();
   },
 
   methods: {
@@ -152,13 +141,10 @@ export default {
         'X-FIB-API-AUTH-TOKEN':'F6HCAFVHPEg3"Sw#',
         'Content-Type': 'application/json'
       }
-      console.log("HEADERS", headers);
-
+    
       axios.get(`${ordersUrl}`, { params: { offset: 0, limit: 100 }, headers: headers }).then(response => {
         let ordersApi = response.data.items;
-        console.log("RESPONSE", response.data.items);
         this.orders = ordersApi;
-        console.log("ORDERS", this.orders);
       })
       .catch(error => {
         console.log("this is the error", error);
@@ -166,68 +152,23 @@ export default {
     },
 
     handleDateSelect(clickInfo) {
-      console.log("HANDLE DATE SELECT",clickInfo);
       let element = document.querySelector('.fc-direction-ltr .fc-daygrid-event.fc-event-end');
-      console.log("INSIDE ELEMENT", element);
       if(!element) {
-        console.log("ELEMENT DOESN'T EXIST");
         this.show = true;
         this.showModal(); 
-      }
-      console.log("CALENDAR OPTIONS", this.calendarOptions.events)
-      this.seeGuests(clickInfo);
-     
-
-
-    },
-
-    seeGuests(clickInfo) {
-      // let ourGuests = this.handleEvents(this.guests);
-      console.log("I GOT CALLED");
-      
-      if (clickInfo.start) {
-        let date = new Date(clickInfo.start).toISOString();
-        let momentDate = moment(date);
-        console.log("MOMENT DATE",momentDate);
-        let clickInfoDate = momentDate.format("YYYY-MM-DD hh:mm:ss");
-        console.log("MOMENT DATE FORMAT",clickInfoDate)
-        for (var i in this.calendarOptions.events) {
-          console.log("date in eventtttt",this.calendarOptions.events[i].start);
-          if (this.calendarOptions.events[i].start == clickInfoDate) {
-            console.log("TRUEEEEE!!!");
-            this.singleGuest = this.calendarOptions.events[i];
-            console.log("SINGLE GUEST OBJJJJ", this.singleGuest)
-            for (var k in this.orders) {
-              console.log("SINGLE GUEST COMPLTETEEEE22", this.singleGuest.id);
-              if (this.singleGuest.id === this.orders[k].guest_id) {
-                this.singleGuest.price = this.orders[k].price;
-                this.singleGuest.name = this.orders[k].name;
-                this.singleGuest.quantity = this.orders[k].quantity;
-                  console.log("COMPLETE SINGLE GUEST 3333", this.singleGuest);
-              }
-            }
-
-            this.showModal();
-          }
-        }
       }
     },
 
     seeGuestInfo(infoGuest) {
-      console.log("INFOGUEST", infoGuest);
       if (infoGuest.event.title) {
-          console.log("single guest");
         for (var i in this.calendarOptions.events) {
           if (this.calendarOptions.events[i].title === infoGuest.event.title) {
             this.guest = this.calendarOptions.events[i];
-            console.log(this.calendarOptions.events[i]);
             for (var k in this.orders) {
-              console.log("GUEST ID", this.guest.id);
               if (this.guest.id === this.orders[k].guest_id) {
                 this.guest.price = this.orders[k].price;
                 this.guest.name = this.orders[k].name;
                 this.guest.quantity = this.orders[k].quantity;
-                  console.log("COMPLETE GUEST", this.guest);
               }
             }
             this.showModal();
@@ -237,7 +178,6 @@ export default {
     },
 
     handleEvents(guests) {
-      console.log("GUESTSssssss", guests);
       return this.guests = guests;
     },
 
@@ -253,14 +193,11 @@ export default {
         'X-FIB-API-AUTH-TOKEN':'F6HCAFVHPEg3"Sw#',
         'Content-Type': 'application/json'
       }
-      console.log("HEADERS", headers);
-
+  
       axios.get(`${guestsUrl}`, { params: { offset: 0, limit: 100 }, headers: headers }).then(response => {
         let guests = response.data.items;
-        console.log("RESPONSE", response.data.items);
         let apiGuests = guests.map(guest => this.visitingGuest(guest));
         this.calendarOptions.events = [... apiGuests];
-         console.log("THIS IS CALENDAR OPTIONS EVENTS",this.calendarOptions.events)
       })
       .catch(error => {
         console.log("this is the error", error);
@@ -311,7 +248,7 @@ li {
   padding: 0;
 }
 
-b { /* used for event dates/times */
+b { 
   margin-right: 3px;
 }
 
@@ -568,16 +505,5 @@ b { /* used for event dates/times */
   border: 2px solid $primary;
  
 }
-
-
-
-// .fc-theme-standard td {
-//     width: 150px;
-// }
-
-// .fc-col-header-cell {
-//     width: 150px;
-// }
-
 
 </style>
