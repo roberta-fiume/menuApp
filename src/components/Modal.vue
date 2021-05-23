@@ -59,7 +59,7 @@
     display: flex;
     flex-direction: column;
     z-index: 2;
-    @include borderProperties(#0aa, 8px);
+    @include borderProperties($secondary, 8px);
 
     @include responsive(tablet) {
       width: 400px;  

@@ -311,23 +311,31 @@ b { /* used for event dates/times */
   margin: 0 auto;
 }
 
-// .fc-toolbar-chunk {
- 
-//   border-radius: 3px;
-// }
 
 .fc .fc-toolbar-title {
-   @include textProperties(22px, $primary);
+  @include textProperties(22px, $primary);
+  @include responsive(tablet) {
+    @include textProperties(18px, $primary);
+  }
+
+  @include responsive(mobile) {
+    @include textProperties(15px, $primary);
+  }
 }
 
 .fc .fc-button {
   background-color: $primary;
   border: transparent;
   background-color: $primary;
-  outline: none;
-  box-shadow: none;
-  border: none;
   @include textProperties(16px, $white);
+
+    @include responsive(tablet) {
+      @include textProperties(13px, $white);
+    }
+
+    @include responsive(mobile) {
+      @include textProperties(10px, $white);
+    }
 }
 
 .fc .fc-button:hover {
@@ -363,28 +371,72 @@ b { /* used for event dates/times */
    border-color: transparent;
    background-color: $primary;
    @include textProperties(16px, $white);
+
+    @include responsive(tablet) {
+      @include textProperties(13px, $white);
+    }
+
+    @include responsive(mobile) {
+      @include textProperties(10px, $white);
+    }
+   
 }
 
 .fc .fc-col-header-cell-cushion {
   color: $primary;
   @include textProperties(14px, $primary);
+  @include responsive(mobile) {
+    @include textProperties(10px, $primary);
+  }
 }
 
 .fc .fc-daygrid-day-number {
    color: $primary;
    font-weight: 500;
    margin-right: 3px !important;
-}
 
-.fc-direction-ltr .fc-daygrid-event.fc-event-end {
-     @include textProperties(10px, $primary);
-
-    @include responsive(tablet) {
-      display: flex;
-      flex-direction: column;
-      @include textProperties(6px, $primary);
+    @include responsive(mobile) {
+      @include textProperties(8px, $primary);
     }
 }
+
+.fc .fc-daygrid-more-link {
+    @include responsive(tablet) {
+      @include textProperties(9px, $primary);
+    }
+
+    @include responsive(mobile) {
+      @include textProperties(8px, $primary);
+    }
+
+ 
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end span {
+    @include textProperties(10px, $primary);
+
+  @include responsive(tablet) {
+    display: flex;
+    flex-direction: column;
+    @include textProperties(8px, $primary);
+  }
+
+  @include responsive(mobile) {
+    display: flex;
+    flex-direction: column;
+    @include textProperties(6px, $primary);
+  }
+}
+
+.fc-theme-standard .fc-popover-header {
+  background-color: $primary-light;
+  @include textProperties(12px, $white);
+}
+
+.fc .fc-daygrid-event-harness {
+  @include textProperties(18px, $primary !important) ;
+}
+
 
 
 // .fc-theme-standard td {
