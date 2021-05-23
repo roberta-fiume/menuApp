@@ -310,6 +310,83 @@ b { /* used for event dates/times */
   max-width: 1100px;
   margin: 0 auto;
 }
+
+// .fc-toolbar-chunk {
+ 
+//   border-radius: 3px;
+// }
+
+.fc .fc-toolbar-title {
+   @include textProperties(22px, $primary);
+}
+
+.fc .fc-button {
+  background-color: $primary;
+  border: transparent;
+  background-color: $primary;
+  outline: none;
+  box-shadow: none;
+  border: none;
+  @include textProperties(16px, $white);
+}
+
+.fc .fc-button:hover {
+  transition: 0.3s;
+  background-color: $primary-light;
+  
+}
+
+.fc .fc-button:active {
+  outline: 0;
+  box-shadow: none;
+  border: none;
+}
+
+.fc .fc-button-primary:not(:disabled):active {
+  background-color: $primary-light;
+}
+
+.fc .fc-button:focus {
+  box-shadow: none;
+  border: none;
+}
+
+.fc .fc-button-primary:active {
+  box-shadow: none;
+  border: none;
+  outline: none;
+}
+
+
+.fc .fc-button-primary:disabled {
+  cursor:pointer;
+   border-color: transparent;
+   background-color: $primary;
+   @include textProperties(16px, $white);
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: $primary;
+  @include textProperties(14px, $primary);
+}
+
+.fc .fc-daygrid-day-number {
+   color: $primary;
+   font-weight: 500;
+   margin-right: 3px !important;
+}
+
+.fc-direction-ltr .fc-daygrid-event.fc-event-end {
+     @include textProperties(10px, $primary);
+
+    @include responsive(tablet) {
+      display: flex;
+      flex-direction: column;
+      @include textProperties(6px, $primary);
+    }
+}
+
+
 // .fc-theme-standard td {
 //     width: 150px;
 // }
